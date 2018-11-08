@@ -1,0 +1,56 @@
+# Show existing databases
+show dbs
+
+# Create a database named "student-information-system" and start using it
+use student-information-system
+
+# Show the database currently being used
+db
+
+# Create a collection called "students" in database
+db.createCollection("students")
+
+# Show collections in current database
+show collections
+
+# Show all databases
+show dbs
+
+# Add a student into collection
+db.student.insert({
+   name : "Sherlock Holmes",
+   email : "sherlock.holmes@gmail.com",
+   address : {
+     line1 : "221B",
+     line2 : "Baker Street",
+     city : "London",
+     state : "UK",
+     zip : 10370
+   }
+})
+
+# View all students collection
+db.students.find()
+
+# View all students in collection in readable format
+db.students.find().pretty()
+
+# Update the zip code in student details
+db.students.update(
+  {name : "Sherlock Holmes"},
+  {$set :
+      {
+        name : "Sherlock Holmes",
+        email : "sherlock.holmes@gmail.com",
+        address : {
+          line1 : "221B",
+          line2 : "Baker Street",
+          city : "London",
+          state : "UK",
+          zip : "NW1 5AZ"
+      }
+  }
+})
+
+# Remove student from collection
+db.students.remove({name : "Sherlock Holmes"})
