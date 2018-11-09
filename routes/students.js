@@ -12,7 +12,7 @@ router.get('/', function(req, response, next) {
         var dbo = db.db("student-information-system");
         dbo.collection("students").find({}).toArray(function(err, result) {
             if (err) throw err;
-            response.status(200).json(result);
+            response.json(result);
             db.close();
         });
     });
