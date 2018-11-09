@@ -3,7 +3,7 @@ var router = express.Router();
 var mongo = require('mongodb');
 
 /* GET students listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function(req, response, next) {
     var mongoClient = mongo.MongoClient;
     var url = "mongodb://localhost:27017/";
 
@@ -12,16 +12,20 @@ router.get('/', function(req, res, next) {
         var dbo = db.db("student-information-system");
         dbo.collection("students").find({}).toArray(function(err, result) {
             if (err) throw err;
-            console.log(JSON.stringify(result, null, 2));
+            response.status(200).json(result);
             db.close();
         });
     });
 
-    res.send('respond with a resource');
+    response.status(500).send();
+});
+
+router.get('/view', function(req, res, next) {
+    res.render('studentView', { title: 'Student Data' });
 });
 
 /* ADD new student */
-router.post("/create", function (req, res, next) {
+router.post("/", function (req, response, next) {
     var mongoClient = mongo.MongoClient;
     var url = "mongodb://localhost:27017/";
 
@@ -49,6 +53,7 @@ router.post("/create", function (req, res, next) {
         database.collection("students").insertOne(student, function(err, res) {
             if (err) throw err;
             console.log("1 document inserted");
+            response.redirect("/");
             db.close();
         });
     });
