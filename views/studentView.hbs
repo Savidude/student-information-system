@@ -14,10 +14,53 @@
     <![endif]-->
 
     <script>
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "GET", "/students", false ); // false for synchronous request
-        xmlHttp.send( null );
-        return xmlHttp.responseText;
+        function getStudents(url, callback) {
+            const xhr = new XMLHttpRequest();
+            xhr.timeout = 2000;
+            xhr.onreadystatechange = function(e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        callback(null, xhr.response)
+                    } else {
+                        callback(xhr.status, null)
+                    }
+                }
+            };
+            xhr.ontimeout = function () {
+                console.log('Timeout')
+            };
+            xhr.open('get', url, true);
+            xhr.send();
+        }
+
+        getStudents("/students", function (status, response) {
+            const results = JSON.parse(response);
+
+            results.forEach(function (student) {
+               console.log(JSON.stringify(student));
+               var studentRow = document.createElement("tr");
+
+               var nameCell = document.createElement("td");
+               nameCell.innerHTML = student.name;
+               studentRow.appendChild(nameCell);
+
+                var emailCell = document.createElement("td");
+                emailCell.innerHTML = student.email;
+                studentRow.appendChild(emailCell);
+
+
+                var address = student.address;
+                if (address !== undefined) {
+                    var addressCell = document.createElement("td");
+                    var addressText = address.line1 + ", " + address.line2 + ", " + address.state + ", " + address.zip;
+                    addressCell.innerHTML = addressText;
+                    studentRow.appendChild(addressCell);
+
+                    var tableBody = document.getElementById("studentRecords");
+                    tableBody.appendChild(studentRow);
+                }
+            });
+        });
     </script>
 </head>
 <body>
@@ -51,28 +94,28 @@
         <div class="col-sm-8 text-left">
             <table class="table">
                 <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Address</th>
-                </tr>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Address</th>
+                    </tr>
                 </thead>
                 <tbody id="studentRecords">
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                </tr>
+                    <!--<tr>-->
+                        <!--<th scope="row">1</th>-->
+                        <!--<td>Mark</td>-->
+                        <!--<td>Otto</td>-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                        <!--<th scope="row">2</th>-->
+                        <!--<td>Jacob</td>-->
+                        <!--<td>Thornton</td>-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                        <!--<th scope="row">3</th>-->
+                        <!--<td>Larry</td>-->
+                        <!--<td>the Bird</td>-->
+                    <!--</tr>-->
                 </tbody>
             </table>
         </div>

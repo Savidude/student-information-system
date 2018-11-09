@@ -12,12 +12,12 @@ router.get('/', function(req, response, next) {
         var dbo = db.db("student-information-system");
         dbo.collection("students").find({}).toArray(function(err, result) {
             if (err) throw err;
-            response.json(result);
+            // response.json(result);
+            console.log(JSON.stringify(result, null, 2));
+            response.status(200).json(result);
             db.close();
         });
     });
-
-    response.status(500).send();
 });
 
 router.get('/view', function(req, res, next) {
