@@ -12,8 +12,6 @@ router.get('/', function(req, response, next) {
         var dbo = db.db("student-information-system");
         dbo.collection("students").find({}).toArray(function(err, result) {
             if (err) throw err;
-            // response.json(result);
-            console.log(JSON.stringify(result, null, 2));
             response.status(200).json(result);
             db.close();
         });
@@ -34,6 +32,7 @@ router.post("/", function (req, response, next) {
     var line1 = req.body.line1;
     var line2 = req.body.line2;
     var state = req.body.state;
+    var city = req.body.city;
     var zip = req.body.zip;
 
     mongoClient.connect(url, function(err, db) {
@@ -45,6 +44,7 @@ router.post("/", function (req, response, next) {
             address : {
                 line1 : line1,
                 line2 : line2,
+                city : city,
                 state : state,
                 zip : zip
             }
@@ -56,6 +56,44 @@ router.post("/", function (req, response, next) {
             response.redirect("/");
             db.close();
         });
+    });
+});
+
+/* Update student */
+router.post("/update", function (req, response, next) {
+    var mongoClient = mongo.MongoClient;
+    var url = "mongodb://localhost:27017/";
+
+    var name = req.body.name;
+    var email = req.body.email;
+    var line1 = req.body.line1;
+    var line2 = req.body.line2;
+    var state = req.body.state;
+    var city = req.body.city;
+    var zip = req.body.zip;
+
+    mongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var database = db.db("student-information-system");
+        var student = {
+            name : name,
+            email : email,
+            address : {
+                line1 : line1,
+                line2 : line2,
+                city : city,
+                state : state,
+                zip : zip
+            }
+        };
+        var query = { name : name };
+        
+        database.collection("students").updateOne(query, { $set : student }, function (err, res) {
+            if (err) throw err;
+            console.log("1 document updated");
+            response.redirect("/students/view");
+            db.close();
+        })
     });
 });
 
