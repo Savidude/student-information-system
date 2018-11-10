@@ -17,7 +17,7 @@ show collections
 show dbs
 
 # Add a student into collection
-db.student.insert({
+db.students.insert({
    name : "Sherlock Holmes",
    email : "sherlock.holmes@gmail.com",
    address : {
