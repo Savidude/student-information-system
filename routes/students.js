@@ -93,9 +93,31 @@ router.post("/update", function (req, response, next) {
             console.log("1 document updated");
             response.redirect("/students/view");
             db.close();
-        })
+        });
     });
 });
 
+/* Delete student */
+router.post("/delete", function (req, response, next) {
+    var mongoClient = mongo.MongoClient;
+    var url = "mongodb://localhost:27017/";
+
+    var name = req.body.name;
+
+    mongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var database = db.db("student-information-system");
+        var query = { name : name };
+
+        console.log(query)
+
+        database.collection("students").deleteOne(query, function(err, obj) {
+            if (err) throw err;
+            console.log("1 document deleted");
+            response.status(200);
+            db.close();
+        });
+    });
+});
 
 module.exports = router;

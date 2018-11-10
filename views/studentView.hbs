@@ -66,13 +66,12 @@
                 studentRow.appendChild(editCell);
 
                 var deleteCell = document.createElement("td");
-                deleteCell.innerHTML = '<button type="button" class="btn btn-danger">Delete</button>';
+                deleteCell.innerHTML = '<button type="button" class="btn btn-danger" onclick="deleteStudent(\'' + student.name  + '\')">Delete</button>';
                 studentRow.appendChild(deleteCell);
             });
         });
 
         function populateModal(name, email, line1, line2, city, state, zip) {
-            console.log(name)
             document.getElementById("editName").value = name;
             document.getElementById("editEmail").value = email;
             document.getElementById("editLine1").value = line1;
@@ -80,6 +79,30 @@
             document.getElementById("editCity").value = city;
             document.getElementById("editState").value = state;
             document.getElementById("editZip").value = zip;
+        }
+
+        function deleteStudent(name) {
+            const xhr = new XMLHttpRequest();
+            xhr.timeout = 2000;
+            xhr.onreadystatechange = function(e) {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        console.log("student deleted");
+                        location.reload();
+                    } else {
+                        console.log("Error while deleting student");
+                    }
+                }
+            };
+            xhr.ontimeout = function () {
+                console.log('Timeout');
+            };
+            xhr.open('post', "/students/delete", true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            var urlEncodedData = encodeURIComponent("name") + "=" + encodeURIComponent(name);
+            urlEncodedData = urlEncodedData.replace(/%20/g, '+');
+            xhr.send(urlEncodedData);
         }
     </script>
 </head>
